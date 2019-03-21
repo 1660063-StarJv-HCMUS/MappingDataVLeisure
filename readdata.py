@@ -1,8 +1,8 @@
 import mysql.connector
 from mysql.connector import Error
 try:
-    mySQLconnection = mysql.connector.connect(host='localhost', database='categories', user='root', password='')
-    sql_select_Query = "SELECT * FROM `table 1` WHERE Hotelname like '%Catina%'"
+    mySQLconnection = mysql.connector.connect(host='localhost', database='test', user='root', password='')
+    sql_select_Query = "SELECT * FROM `sup1` WHERE Hotelname like '%Catina%'"
     cursor = mySQLconnection.cursor()
     cursor.execute(sql_select_Query)
     records = cursor.fetchall()
