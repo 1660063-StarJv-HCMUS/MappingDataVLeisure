@@ -2,18 +2,37 @@ import mysql.connector
 from mysql.connector import Error
 import nltk
 from nltk.corpus import stopwords
+from string import(punctuation)
+from nltk.tokenize import word_tokenize, sent_tokenize
+import re
 
-def RemoveStopWords():
-    my_stopwords = set(stopwords.words('english'))
-def RemoveSpecialKeys():
+def RemoveStopWords(str):
+    my_stopwords = set(stopwords.words('english')+list(punctuation))
+    words = word_tokenize(str)
+    words = [word.lower() for word in words]
+    words = [word for word in words if word not in my_stopwords]
+    return words
 
-def RemoveCityInHotelname():
+def RemoveSpecialKeys(str):
+    string = re.sub('[^A-Za-z0-9]+', '', str)
+    return string
+def RemoveCityInHotelname(hotel, city):
+    str= hotel.replace(city,'')
+    return str
+def formatHotelname(name, city):
+    str=RemoveStopWords(name)
+    str=RemoveSpecialKeys(str)
+    str = RemoveCityInHotelname(str, city)
+    return str
+def formatCityName(name):
+    str=RemoveStopWords(name)
+    str=RemoveSpecialKeys(str)
+    return str
 
-def formatHotelname():
-
-def formatCityName():
-
-def formatCountyName():
+def formatCountyName(name):
+    str = RemoveStopWords(name)
+    str = RemoveSpecialKeys(str)
+    return str
 
 class Hotel:
     def __init__(self, id, code, latitude,longtitude):
@@ -21,7 +40,10 @@ class Hotel:
         self.code = code
         self.latitude = latitude
         self.longtitude = longtitude
-
+    def showInfo(self):
+        print("id: ", self.id)
+        print("code: ", self.code)
+        print("Latitude: ", self.latitude, "Longtitude: ", self.longtitude) 
 try:
     mySQLconnection = mysql.connector.connect(host='localhost', database='test', user='root', password='')
     sql_select_Query = "SELECT * FROM `sup1`"
@@ -31,15 +53,19 @@ try:
 
     print("Total number of rows in categories", cursor.rowcount)
     print("Printing each row's column value i.e. categories")
-    i = 1
+    i = 0
     ListHotel = []
     for row in records:
-        print(i)
         ##############################
-        ListHotel.id = row[1]
-        ListHotel.code = formatHotelname(row[0])+formatCityName(row[3])+formatCountyName(row[6])
-        ListHotel.latitude = row[10]
-        ListHotel.longtitude = row[11]
+        
+        id = row[1]
+        code = formatHotelname(row[0],formatCityName(row[3]))+formatCityName(row[3])+formatCountyName(row[6])
+        latitude = row[10]
+        longtitude = row[11]
+        tmp = Hotel(id,code,latitude,longtitude)
+        ListHotel.append(tmp)
+        ListHotel[i].showInfo()
+        i+=1
         """
         print("Hotelname = ", row[0])
         print("Hotelid = ", row[1])
